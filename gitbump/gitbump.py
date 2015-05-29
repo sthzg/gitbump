@@ -12,9 +12,9 @@ import subprocess
 @click.option('--beta', is_flag=True, help="Mark as a beta release, e.g. v1.0.1-beta.1")
 @click.option('--rc', is_flag=True, help="Mark as an rc release, e.g. v1.0.1-rc.1")
 @click.option('--stable', is_flag=True, help="Mark as a stable release, e.g. v1.0.2")
-@click.option('--noconform', is_flag=True, help="Skip manual confirmation")
+@click.option('--noconfirm', is_flag=True, help="Skip manual confirmation")
 @click.option('--nopush', is_flag=True, help="Don't automatically push branch and tags")
-def gitbump(major, minor, patch, build, alpha, beta, rc, stable, noconform, nopush):
+def gitbump(major, minor, patch, build, alpha, beta, rc, stable, noconfirm, nopush):
     new_tag = None
     latest_tag = _get_latest_tag()
     vtag = Semver(latest_tag)
@@ -23,7 +23,7 @@ def gitbump(major, minor, patch, build, alpha, beta, rc, stable, noconform, nopu
     if not any((major, minor, patch, build, alpha, beta, rc, stable)):
         new_tag = vtag.autobump()
 
-    if not noconform:
+    if not noconfirm:
         click.confirm(
             'gitbump will add this tag: {}. Continue?'.format(new_tag),
             default=True,
