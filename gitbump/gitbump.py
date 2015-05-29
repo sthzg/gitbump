@@ -26,6 +26,7 @@ def gitbump(major, minor, patch, build, alpha, beta, rc, stable, noconform, nopu
     if not noconform:
         click.confirm(
             'gitbump will add this tag: {}. Continue?'.format(new_tag),
+            default=True,
             abort=True
         )
 
@@ -45,9 +46,16 @@ def _get_latest_tag():
     """ Return the latest tag from a repository in the current working dir.
     """
     try:
-        latest_tag = subprocess.check_output(['git', 'describe', '--abbrev=0'])
-    except subprocess.CalledProcessError:
-        click.echo('Error calling git describe. Is your directory under VC?')
+        latest_tag = subprocess.check_output(
+            ['git', 'describe', '--abbrev=0'],
+            stderr=subprocess.STDOUT
+        )
+    except subprocess.CalledProcessError, e:
+        click.secho(
+            'Error calling git describe. Is your directory under VC? '
+            'and do you already use semver like tags in it?',
+            fg='red'
+        )
         exit(1)
         return
 
